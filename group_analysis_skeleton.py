@@ -13,7 +13,6 @@ import scipy.stats
 import os
 import shutil
 
-
 #%%
 # copy files from testing room folders to raw data, rename files to include
 # testing room letter in the filename
@@ -25,8 +24,6 @@ testingrooms = ['A','B','C']
 for room in testingrooms:
     shutil.copy(cwd + '/testingroom' + room + '/experiment_data.csv', cwd  + '/rawdata/experiment_data_' + room + '.csv') # Copies testing room files to rawdata folder and renames files
 ...
-
-
 
 #%%
 # read in all the data files in rawdata directory using a for loop
@@ -40,13 +37,11 @@ for room in testingrooms:
     data = np.vstack([data, tmp]) # stack testingroom data to form a single array
 ...
 
-
 #%%
 # calculate overall average accuracy and average median RT
 #
 acc_avg = np.mean(data[:,3])   # 91.48% accuracy column is [:, 3] index
 mrt_avg = np.mean(data[:,4])   # 477.3ms median rt column is [:,4] index
-
 
 #%%
 # calculate averages (accuracy & RT) split by stimulus using a for loop and an 
@@ -54,33 +49,39 @@ mrt_avg = np.mean(data[:,4])   # 477.3ms median rt column is [:,4] index
 # then divide by the number of data points going into the sum)
 #
 
-sumnums1 = 0
-sumnums2 = 0
-points1 = 0
-points2 = 0
-index = 0
+ACCsumnums1 = 0
+ACCsumnums2 = 0
+RTsumnums1 = 0
+RTsumnums2 = 0
+ACCpoints1 = 0
+ACCpoints2 = 0
+RTpoints1 = 0
+RTpoints2 = 0
 stim = data[:,1]
+subject = data[:,0]
 acc = data[:,3]
 mrt = data[:,4]
 
-for i in np.nditer(stim):
-    print(i)
-    if i == 1:
-        sumnums1 = sumnums1 + acc[index]
-        points1 = points1 + 1
-    elif i == 2:
-        sumnums2 = sumnums2 + acc[index]
-        points2 = points2 +  1
-    index = index + 1
+for i in range(len(subject)):
+    if stim[i] == 1:
+        ACCsumnums1 += acc[i]
+        RTsumnums1 += mrt[i]
+        ACCpoints1 += 1
+        RTpoints1 += 1
+    elif stim[i] == 2:
+        ACCsumnums2 += acc[i]
+        RTsumnums2 += mrt[i]
+        ACCpoints2 += 1
+        RTpoints2 += 1
 
-acc_avg1 = sumnums1 % points1
-acc_avg2 = sumnums2 % points2
 
-
+# Dividing the sum of each condition by the number of points going into the sum
+acc_avg1 = ACCsumnums1 / ACCpoints1
+acc_avg2 = ACCsumnums2 / ACCpoints2
+mrt_avg1 = RTsumnums1 / RTpoints1
+mrt_avg2 = RTsumnums2 / RTpoints2
 ...
-
 # words: 88.6%, 489.4ms   faces: 94.4%, 465.3ms
-
 
 #%%
 # calculate averages (accuracy & RT) split by congruency using indexing, 
@@ -92,7 +93,6 @@ acc_wp = np.mean((data[data[:,2]==1])[:,3])  # 94.0%
 acc_bp = np.mean((data[data[:,2]==2])[:,3])  # 88.9%
 mrt_wp = np.mean((data[data[:,2]==1])[:,4])  # 469.6ms
 mrt_bp = np.mean((data[data[:,2]==2])[:,4])  # 485.1ms
-
 
 #%% 
 # calculate average median RT for each of the four conditions
@@ -123,7 +123,6 @@ words_test = scipy.stats.ttest_rel(mrt_wp_words_array, mrt_bp_words_array) # wor
 faces_test = scipy.stats.ttest_rel(mrt_wp_faces_array, mrt_bp_faces_array) # faces: t=-2.84, p=0.0096
 ...
 
-
 #%%
 # print out averages and t-test results
 # (hint: use the ''.format() method to create formatted strings)
@@ -133,6 +132,7 @@ print('\nOVERALL: {:.2f}%, {:.1f} ms'.format(100*acc_avg,mrt_avg))
 
 # Averages of accuracy and median RT split by stimulus
 # To be completed
+print('\nStimulus 1 (words): \nACCURACY: {:.2f}% \nMEDIAN RT: {:.1f} ms \n\nStimulus 2 (faces): \nACCURACY: {:.2f}% \nMEDIAN RT: {:.1f} ms'.format(100*acc_avg1,mrt_avg1,100*acc_avg2,mrt_avg2))
 
 # Averages of accuracy and median RT split by pairing
 print('\nWP Average: \nACCURACY: {:.2f}% \nMEDIAN RT: {:.1f} ms \n\nBP Average: \nACCURACY: {:.2f}% \nMEDIAN RT: {:.1f} ms'.format(100*acc_wp,mrt_wp,100*acc_bp,mrt_bp))

@@ -128,8 +128,20 @@ faces_test = scipy.stats.ttest_rel(mrt_wp_faces_array, mrt_bp_faces_array) # fac
 # print out averages and t-test results
 # (hint: use the ''.format() method to create formatted strings)
 #
+# Overall accuracy and median RT
 print('\nOVERALL: {:.2f}%, {:.1f} ms'.format(100*acc_avg,mrt_avg))
 
-# Words
-print('\nWP words average: {}')
+# Averages of accuracy and median RT split by stimulus
+# To be completed
+
+# Averages of accuracy and median RT split by pairing
+print('\nWP Average: \nACCURACY: {:.2f}% \nMEDIAN RT: {:.1f} ms \n\nBP Average: \nACCURACY: {:.2f}% \nMEDIAN RT: {:.1f} ms'.format(100*acc_wp,mrt_wp,100*acc_bp,mrt_bp))
+
+# Average median RT for each of the four conditions
+print('\nMEDIAN RT (WORDS): \nWP: {:.1f}ms; BP:{:.1f}ms \n\nMEDIAN RT (FACES): \nWP: {:.1f}ms; BP:{:.1f}ms'.format(mrt_wp_words, mrt_bp_words, mrt_wp_faces, mrt_wp_words))
+
+# T-test results comparing pairing conditions' effect on RT within stimulus
+print('\nTEST RESULTS (WORDS): \nt-value= {:.2f} \np-value= {:.4f}'.format(words_test[0], words_test[1]))
+print('\nTEST RESULTS (FACES): \nt-value= {:.2f} \np-value= {:.4f}'.format(faces_test[0], faces_test[1]))
 ...
+
